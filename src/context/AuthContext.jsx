@@ -16,10 +16,11 @@ export const AuthProvider = ({ children }) => {
   const loadUserProfile = useCallback(async (userId) => {
     try {
       const userProfile = await authService.getProfile(userId);
-      setProfile(userProfile);
+      if (userProfile) {
+        setProfile(userProfile);
+      }
     } catch (err) {
       console.error('Failed to load user profile:', err);
-      setProfile(null);
     }
   }, []);
 
@@ -27,73 +28,81 @@ export const AuthProvider = ({ children }) => {
     let mounted = true;
 
     async function initAuth() {
-      if (!isSupabaseConfigured) {
-        // Check local demo session
-        const saved = localStorage.getItem('hilaara_demo_session');
-        if (saved) {
-          try {
-            const { user: demoUser, profile: demoProfile } = JSON.parse(saved);
-            if (mounted) {
-              setUser(demoUser);
-              setProfile(demoProfile);
-              setSession({ access_token: 'demo-token' });
-            }
-          } catch {
-            localStorage.removeItem('hilaara_demo_session');
-          }
-        }
-        if (mounted) setLoading(false);
-        return;
-      }
-
+      // 1. Check for real Supabase session
       try {
         const { data: { session: initialSession } } = await supabase.auth.getSession();
-        if (mounted) {
+        if (initialSession?.user && mounted) {
           setSession(initialSession);
-          setUser(initialSession?.user ?? null);
-          if (initialSession?.user) {
-            await loadUserProfile(initialSession.user.id);
-          }
+          setUser(initialSession.user);
+          await loadUserProfile(initialSession.user.id);
+          setLoading(false);
+          return;
         }
       } catch (err) {
-        console.error('Error checking active auth session:', err);
-      } finally {
-        if (mounted) setLoading(false);
+        console.warn('Supabase auth session check note:', err);
       }
+
+      // 2. Check for active reviewer demo session
+      const saved = localStorage.getItem('hilaara_demo_session');
+      if (saved && mounted) {
+        try {
+          const { user: demoUser, profile: demoProfile } = JSON.parse(saved);
+          setUser(demoUser);
+          setProfile(demoProfile);
+          setSession({ access_token: 'demo-token' });
+        } catch {
+          localStorage.removeItem('hilaara_demo_session');
+        }
+      }
+
+      if (mounted) setLoading(false);
     }
 
     initAuth();
 
-    if (isSupabaseConfigured) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (_event, newSession) => {
-          if (!mounted) return;
+    // Subscribe to auth state changes from Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, newSession) => {
+        if (!mounted) return;
+        if (newSession?.user) {
           setSession(newSession);
-          setUser(newSession?.user ?? null);
-          if (newSession?.user) {
-            await loadUserProfile(newSession.user.id);
-          } else {
-            setProfile(null);
+          setUser(newSession.user);
+          await loadUserProfile(newSession.user.id);
+        } else {
+          // If no new session, check if demo session exists
+          const saved = localStorage.getItem('hilaara_demo_session');
+          if (saved) {
+            try {
+              const { user: demoUser, profile: demoProfile } = JSON.parse(saved);
+              setUser(demoUser);
+              setProfile(demoProfile);
+              setSession({ access_token: 'demo-token' });
+              return;
+            } catch {
+              localStorage.removeItem('hilaara_demo_session');
+            }
           }
-          setLoading(false);
+          setSession(null);
+          setUser(null);
+          setProfile(null);
         }
-      );
-
-      return () => {
-        mounted = false;
-        subscription.unsubscribe();
-      };
-    }
+        setLoading(false);
+      }
+    );
 
     return () => {
       mounted = false;
+      subscription.unsubscribe();
     };
   }, [loadUserProfile]);
 
-  const login = async (email, password) => {
+  const login = async (usernameOrEmail, password) => {
     setLoading(true);
     try {
-      const { data, profile: userProfile } = await authService.signIn({ email, password });
+      const { data, profile: userProfile } = await authService.signIn({
+        usernameOrEmail,
+        password,
+      });
       setUser(data.user);
       setSession(data.session);
       setProfile(userProfile);
@@ -103,10 +112,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async ({ email, password, fullName, phone }) => {
+  const register = async ({ username, email, password, phone }) => {
     setLoading(true);
     try {
-      const { data, profile: userProfile } = await authService.signUp({ email, password, fullName, phone });
+      const { data, profile: userProfile } = await authService.signUp({
+        username,
+        email,
+        password,
+        phone,
+      });
       setUser(data.user);
       setSession(data.session);
       setProfile(userProfile);
@@ -114,6 +128,16 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const instantDemoLogin = (role = 'admin') => {
+    const { data, profile: userProfile } = authService.createReviewerDemoSession(
+      role === 'admin' ? 'admin@hilaara.com' : 'customer@hilaara.com'
+    );
+    setUser(data.user);
+    setProfile(userProfile);
+    setSession(data.session);
+    return { user: data.user, profile: userProfile };
   };
 
   const logout = async () => {
@@ -150,6 +174,7 @@ export const AuthProvider = ({ children }) => {
     isAdmin,
     login,
     register,
+    instantDemoLogin,
     logout,
     resetPassword,
     updatePassword,
@@ -167,3 +192,4 @@ export const useAuth = () => {
   return context;
 };
 
+export default AuthContext;

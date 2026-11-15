@@ -18,6 +18,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT NOT NULL UNIQUE,
+    username TEXT UNIQUE,
     full_name TEXT NOT NULL,
     phone TEXT,
     role TEXT NOT NULL DEFAULT 'customer' CHECK (role IN ('customer', 'admin')),
@@ -69,15 +70,17 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name, role)
+  INSERT INTO public.profiles (id, email, username, full_name, role)
   VALUES (
     NEW.id,
     NEW.email,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', 'Customer'),
+    COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'username', 'Customer'),
     COALESCE(NEW.raw_user_meta_data->>'role', 'customer')
   )
   ON CONFLICT (id) DO UPDATE
-  SET email = EXCLUDED.email;
+  SET email = EXCLUDED.email,
+      username = COALESCE(EXCLUDED.username, public.profiles.username);
   RETURN NEW;
 END;
 $$;

@@ -9,6 +9,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { AdminRoute } from './routes/AdminRoute';
 import { StorefrontLayout } from './components/layout/StorefrontLayout';
+import { AuthLayout } from './components/layout/AuthLayout';
 import { HomePage } from './pages/storefront/HomePage';
 
 // Loading fallback — minimal inline spinner to avoid importing components before fonts load
@@ -122,12 +123,6 @@ export function App() {
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
 
-                    {/* Auth pages — inside layout so Navbar + Footer are present */}
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                    <Route path="/reset-password" element={<ResetPasswordPage />} />
-
                     {/* Protected customer area */}
                     <Route
                       path="/account"
@@ -142,6 +137,14 @@ export function App() {
                       <Route path="addresses" element={<AddressesPage />} />
                       <Route path="wishlist" element={<WishlistPage />} />
                     </Route>
+                  </Route>
+
+                  {/* Dedicated Auth Pages — Clean header with 'Back to Home' only, no footer */}
+                  <Route element={<AuthLayout />}>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
                   </Route>
 
                   {/* Admin area — full-page dedicated dark shell with protected admin guard */}

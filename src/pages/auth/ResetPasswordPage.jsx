@@ -50,84 +50,94 @@ export const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-[75vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-warm-ivory">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-4">
-        <Link to="/" className="inline-flex items-center gap-2.5">
-          <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-10 w-auto" />
-        </Link>
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-charcoal">
-          Set New Password
-        </h2>
-        <p className="text-xs uppercase tracking-wider-brand text-muted-text">
-          Create a secure password for your HILAARA account
-        </p>
-      </div>
+    <div className="w-full max-w-md mx-auto">
+      {/* Luxury All-in-One Enclosed Card */}
+      <div className="bg-white rounded-md shadow-card border border-soft-beige p-7 sm:p-10 space-y-6">
+        
+        {/* Brand Mark & Titles inside the card */}
+        <div className="text-center space-y-3 pb-2 border-b border-soft-beige/60">
+          <Link to="/" className="inline-flex items-center justify-center p-2 rounded-full bg-warm-ivory/60 hover:bg-warm-ivory transition-colors">
+            <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-8 w-auto" />
+          </Link>
+          <div>
+            <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
+              Set New Password
+            </h1>
+            <p className="text-xs uppercase tracking-wider-brand text-muted-text mt-1 font-medium">
+              Create a secure password for your account
+            </p>
+          </div>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-card border border-soft-beige sm:rounded-sm sm:px-10">
-          {isSuccess ? (
-            <div className="text-center space-y-4 py-4">
-              <div className="w-12 h-12 rounded-full bg-status-success/10 text-status-success flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-xl font-medium text-charcoal">Password Updated</h3>
-              <p className="text-xs sm:text-sm text-muted-text leading-relaxed">
-                Your new password has been established. Redirecting you to sign in...
-              </p>
-              <div className="pt-2">
-                <Link to="/login">
-                  <Button variant="primary" size="sm">
-                    Sign In Now
-                  </Button>
-                </Link>
-              </div>
+        {isSuccess ? (
+          <div className="text-center space-y-4 py-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
-          ) : (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              {error && (
-                <div className="p-3 bg-status-error/10 border border-status-error/20 rounded-xs text-xs text-status-error font-medium">
-                  {error}
-                </div>
-              )}
+            <h3 className="font-serif text-lg font-medium text-charcoal">Password Updated</h3>
+            <p className="text-xs text-muted-text leading-relaxed">
+              Your new password has been established. Redirecting you to sign in...
+            </p>
+            <div className="pt-2">
+              <Link to="/login">
+                <Button variant="primary" size="sm">
+                  Sign In Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {error && (
+              <div className="p-3 bg-status-error/10 border border-status-error/20 rounded-xs text-xs text-status-error font-medium">
+                {error}
+              </div>
+            )}
 
-              <Input
-                label="New Password (min. 8 characters)"
-                type="password"
-                required
-                autoComplete="new-password"
-                icon={Lock}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
+            <Input
+              label="New Password (min. 8 characters)"
+              type="password"
+              required
+              autoComplete="new-password"
+              icon={Lock}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
 
-              <Input
-                label="Confirm New Password"
-                type="password"
-                required
-                autoComplete="new-password"
-                icon={Lock}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-              />
+            <Input
+              label="Confirm New Password"
+              type="password"
+              required
+              autoComplete="new-password"
+              icon={Lock}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+            />
 
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isLoading}
-                icon={ArrowRight}
-                iconPosition="right"
-              >
-                Establish New Password
-              </Button>
-            </form>
-          )}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full mt-2"
+              isLoading={isLoading}
+              icon={ArrowRight}
+              iconPosition="right"
+            >
+              Update Password
+            </Button>
+          </form>
+        )}
+
+        <div className="pt-4 border-t border-soft-beige/60 text-center text-xs text-muted-text">
+          <Link to="/login" className="font-semibold text-charcoal hover:underline">
+            Return to Sign In
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
+export default ResetPasswordPage;

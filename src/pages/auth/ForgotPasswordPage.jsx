@@ -40,81 +40,82 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-[75vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-warm-ivory">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-4">
-        <Link to="/" className="inline-flex items-center gap-2.5">
-          <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-10 w-auto" />
-        </Link>
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-charcoal">
-          Recover Password
-        </h2>
-        <p className="text-xs uppercase tracking-wider-brand text-muted-text">
-          Enter your registered email to receive recovery instructions
-        </p>
-      </div>
+    <div className="w-full max-w-md mx-auto">
+      {/* Luxury All-in-One Enclosed Card */}
+      <div className="bg-white rounded-md shadow-card border border-soft-beige p-7 sm:p-10 space-y-6">
+        
+        {/* Brand Mark & Titles inside the card */}
+        <div className="text-center space-y-3 pb-2 border-b border-soft-beige/60">
+          <Link to="/" className="inline-flex items-center justify-center p-2 rounded-full bg-warm-ivory/60 hover:bg-warm-ivory transition-colors">
+            <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-8 w-auto" />
+          </Link>
+          <div>
+            <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
+              Recover Password
+            </h1>
+            <p className="text-xs uppercase tracking-wider-brand text-muted-text mt-1 font-medium">
+              Enter your email to receive recovery instructions
+            </p>
+          </div>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-card border border-soft-beige sm:rounded-sm sm:px-10">
-          {isSubmitted ? (
-            <div className="text-center space-y-4 py-4">
-              <div className="w-12 h-12 rounded-full bg-status-success/10 text-status-success flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-xl font-medium text-charcoal">Instructions Dispatched</h3>
-              <p className="text-xs sm:text-sm text-muted-text leading-relaxed">
-                If an account exists for <span className="font-semibold text-charcoal">{email}</span>, you will receive a secure password recovery link shortly.
-              </p>
-              <div className="pt-4">
-                <Link to="/login">
-                  <Button variant="outline" size="sm" icon={ArrowLeft} iconPosition="left">
-                    Back to Sign In
-                  </Button>
-                </Link>
-              </div>
+        {isSubmitted ? (
+          <div className="text-center space-y-4 py-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
-          ) : (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              {error && (
-                <div className="p-3 bg-status-error/10 border border-status-error/20 rounded-xs text-xs text-status-error font-medium">
-                  {error}
-                </div>
-              )}
-
-              <Input
-                label="Registered Email"
-                type="email"
-                required
-                autoComplete="email"
-                icon={Mail}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@domain.com"
-              />
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isLoading}
-              >
-                Send Recovery Link
-              </Button>
-
-              <div className="pt-2 text-center">
-                <Link
-                  to="/login"
-                  className="inline-flex items-center gap-1.5 text-xs text-muted-text hover:text-charcoal transition-colors"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Back to Sign In</span>
-                </Link>
+            <h3 className="font-serif text-lg font-medium text-charcoal">Instructions Dispatched</h3>
+            <p className="text-xs text-muted-text leading-relaxed">
+              If an account exists for <span className="font-semibold text-charcoal">{email}</span>, you will receive a secure password recovery link shortly.
+            </p>
+            <div className="pt-2">
+              <Link to="/login">
+                <Button variant="outline" size="sm" icon={ArrowLeft} iconPosition="left">
+                  Back to Sign In
+                </Button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {error && (
+              <div className="p-3 bg-status-error/10 border border-status-error/20 rounded-xs text-xs text-status-error font-medium">
+                {error}
               </div>
-            </form>
-          )}
+            )}
+
+            <Input
+              label="Registered Email"
+              type="email"
+              required
+              autoComplete="email"
+              icon={Mail}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@domain.com"
+            />
+
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full mt-2"
+              isLoading={isLoading}
+            >
+              Dispatch Instructions
+            </Button>
+          </form>
+        )}
+
+        <div className="pt-4 border-t border-soft-beige/60 text-center text-xs text-muted-text">
+          <Link to="/login" className="inline-flex items-center gap-1.5 font-medium text-charcoal hover:underline">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Sign In</span>
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
+export default ForgotPasswordPage;

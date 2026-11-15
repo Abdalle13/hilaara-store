@@ -13,7 +13,6 @@ const PAGE_SIZE = 24;
 const GENDER_OPTIONS = [
   { value: 'men', label: "Men" },
   { value: 'women', label: "Women" },
-  { value: 'unisex', label: "Unisex" },
 ];
 
 const SORT_OPTIONS = [
@@ -388,7 +387,7 @@ export const ShopPage = () => {
           {activeFilterCount > 0 && (
             <div className="flex flex-wrap items-center gap-2">
               {selectedGenders.map((g) => (
-                <FilterChip key={g} label={g === 'men' ? 'Men' : g === 'women' ? 'Women' : 'Unisex'} onRemove={() => toggleParam('gender', g)} />
+                <FilterChip key={g} label={g === 'men' ? 'Men' : 'Women'} onRemove={() => toggleParam('gender', g)} />
               ))}
               {selectedCategories.map((c) => {
                 const cat = categories.find((x) => x.slug === c);

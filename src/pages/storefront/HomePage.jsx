@@ -617,7 +617,7 @@ const CuratedShowcase = () => {
       <div className="mt-12 text-center">
         <Link to="/shop">
           <Button variant="outline" size="lg" icon={ArrowRight} iconPosition="right">
-            View All {REAL_PRODUCTS.length} Atelier Garments
+            View All
           </Button>
         </Link>
       </div>

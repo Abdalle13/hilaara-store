@@ -341,7 +341,6 @@ export const AdminProductsPage = () => {
                     >
                       <option value="women">Women's Fashion</option>
                       <option value="men">Men's Fashion</option>
-                      <option value="unisex">Unisex</option>
                     </select>
                   </div>
 
