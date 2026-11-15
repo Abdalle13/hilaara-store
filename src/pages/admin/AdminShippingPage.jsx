@@ -86,3 +86,4 @@ export const AdminShippingPage = () => {
 };
 
 export default AdminShippingPage;
+

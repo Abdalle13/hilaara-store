@@ -89,3 +89,4 @@ describe('DemoPaymentModal', () => {
     expect(container.firstChild).toBeNull();
   });
 });
+

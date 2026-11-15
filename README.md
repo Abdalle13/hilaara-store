@@ -175,3 +175,4 @@ The project is pre-configured for Netlify with root `netlify.toml` and single-pa
 Developed with pride for the **CodeAlpha Full Stack Development Internship**.
 All brand identities, custom SVG marks, and typography design systems created exclusively for **HILAARA**.
 Licensed under the [MIT License](LICENSE).
+

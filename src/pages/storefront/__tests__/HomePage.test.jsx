@@ -67,20 +67,20 @@ describe('HomePage', () => {
     expect(emailInput).toBeInTheDocument();
   });
 
-  it('shows empty state for featured products when Supabase is not configured', () => {
+  it('shows featured products collection section', () => {
     renderInRouter(<HomePage />);
-    expect(screen.getByText(/No featured products yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Featured Collection/i)).toBeInTheDocument();
   });
 
-  it('shows empty state for new arrivals when Supabase is not configured', () => {
+  it('shows new arrivals collection section', () => {
     renderInRouter(<HomePage />);
-    expect(screen.getByText(/No new arrivals yet/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/New Arrivals/i).length).toBeGreaterThan(0);
   });
 
   it('shows the benefits strip with delivery information', () => {
     renderInRouter(<HomePage />);
     expect(screen.getByText(/Nationwide Delivery/i)).toBeInTheDocument();
-    expect(screen.getByText(/Mobile Money Payments/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Mobile Money/i).length).toBeGreaterThan(0);
   });
 });
 

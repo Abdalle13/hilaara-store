@@ -170,3 +170,4 @@ describe('paymentService - simulation scenarios', () => {
     expect(processed.status).toBe('cancelled');
   });
 });
+

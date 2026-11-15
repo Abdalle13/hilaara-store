@@ -474,3 +474,4 @@ export const AdminProductsPage = () => {
 };
 
 export default AdminProductsPage;
+

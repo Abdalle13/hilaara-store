@@ -9,6 +9,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { AdminRoute } from './routes/AdminRoute';
 import { StorefrontLayout } from './components/layout/StorefrontLayout';
+import { HomePage } from './pages/storefront/HomePage';
 
 // Loading fallback — minimal inline spinner to avoid importing components before fonts load
 const PageLoader = () => (
@@ -20,9 +21,6 @@ const PageLoader = () => (
 );
 
 // Storefront pages — lazily loaded for code splitting
-const HomePage = lazy(() =>
-  import('./pages/storefront/HomePage').then((m) => ({ default: m.HomePage }))
-);
 const ShopPage = lazy(() =>
   import('./pages/storefront/ShopPage').then((m) => ({ default: m.ShopPage }))
 );

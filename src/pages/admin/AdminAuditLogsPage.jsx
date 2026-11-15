@@ -111,3 +111,4 @@ export const AdminAuditLogsPage = () => {
 };
 
 export default AdminAuditLogsPage;
+

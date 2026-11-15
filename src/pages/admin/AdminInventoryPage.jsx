@@ -299,3 +299,4 @@ export const AdminInventoryPage = () => {
 };
 
 export default AdminInventoryPage;
+

@@ -16,6 +16,7 @@ import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Skeleton } from '../../components/common/Skeleton';
+import { REAL_PRODUCTS } from '../../data/catalog';
 
 // ─── Delivery accordion data ───────────────────────────────────────────────────
 const DELIVERY_ACCORDION = [
@@ -267,12 +268,16 @@ export const ProductDetailPage = () => {
     setAddedToCart(false);
 
     getProductBySlug(slug).then(({ data, error }) => {
-      if (!data || error) {
+      let found = data;
+      if (!found) {
+        found = REAL_PRODUCTS.find((p) => p.slug === slug) || null;
+      }
+      if (!found) {
         setNotFound(true);
       } else {
-        setProduct(data);
+        setProduct(found);
         // Auto-select first available size
-        const activeVariants = data.variants?.filter((v) => v.is_active) || [];
+        const activeVariants = found.variants?.filter((v) => v.is_active) || [];
         if (activeVariants.length > 0) {
           setSelectedSize(activeVariants[0].size);
           setSelectedColor(activeVariants[0].color_name);
@@ -291,7 +296,11 @@ export const ProductDetailPage = () => {
       categoryId: product.category?.id,
       limit: 4,
     }).then(({ data }) => {
-      setRelatedProducts(data || []);
+      let related = data || [];
+      if (related.length === 0) {
+        related = REAL_PRODUCTS.filter((p) => p.id !== product.id && p.gender === product.gender).slice(0, 4);
+      }
+      setRelatedProducts(related);
       setRelatedLoading(false);
     });
   }, [product]);

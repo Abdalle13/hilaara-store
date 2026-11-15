@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body || '{}');
     const { paymentId, orderId, orderNumber, method, scenario, status, transactionReference } = body;
 
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const supabaseUrl = process.env.SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     const now = new Date().toISOString();
@@ -145,3 +145,4 @@ exports.handler = async (event) => {
     };
   }
 };
+

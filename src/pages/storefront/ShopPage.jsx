@@ -6,6 +6,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Button } from '../../components/common/Button';
 import { cn } from '../../utils/cn';
+import { REAL_PRODUCTS, REAL_CATEGORIES } from '../../data/catalog';
 
 const PAGE_SIZE = 24;
 
@@ -104,18 +105,49 @@ export const ShopPage = () => {
 
   // Fetch categories once
   useEffect(() => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured || !supabase) {
+      setCategories(REAL_CATEGORIES);
+      return;
+    }
     supabase
       .from('categories')
       .select('id, name, slug')
       .eq('is_active', true)
       .order('display_order', { ascending: true })
-      .then(({ data }) => setCategories(data || []));
+      .then(({ data }) => setCategories(data && data.length > 0 ? data : REAL_CATEGORIES));
   }, []);
 
   // Fetch products when filters change
   const fetchProducts = useCallback(async (resetPage = true) => {
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured || !supabase) {
+      let filtered = [...REAL_PRODUCTS];
+      if (searchQuery) {
+        filtered = filtered.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      }
+      if (selectedGenders.length > 0) {
+        filtered = filtered.filter((p) => selectedGenders.includes(p.gender));
+      }
+      if (selectedCategories.length > 0) {
+        filtered = filtered.filter(
+          (p) =>
+            selectedCategories.includes(p.category_id) ||
+            selectedCategories.some((c) => (p.category || '').toLowerCase().includes(c.toLowerCase()))
+        );
+      }
+      if (onSale) {
+        filtered = filtered.filter((p) => p.discount_price && p.discount_price < p.base_price);
+      }
+      if (sortBy === 'price-asc') {
+        filtered.sort((a, b) => (a.discount_price || a.base_price) - (b.discount_price || b.base_price));
+      } else if (sortBy === 'price-desc') {
+        filtered.sort((a, b) => (b.discount_price || b.base_price) - (a.discount_price || a.base_price));
+      } else if (sortBy === 'name-asc') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      setProducts(filtered);
+      setTotalCount(filtered.length);
+      setHasMore(false);
       setLoading(false);
       return;
     }

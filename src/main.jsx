@@ -13,13 +13,10 @@ if (rootElement) {
     </React.StrictMode>
   );
 
-  // Smoothly fade out the HTML preloader
+  // Immediately dismiss preloader upon mount
   const preloader = document.getElementById('app-preloader');
   if (preloader) {
-    setTimeout(() => {
-      preloader.classList.add('fade-out');
-      setTimeout(() => preloader.remove(), 400);
-    }, 150);
+    preloader.remove();
   }
 }
 

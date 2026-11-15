@@ -16,12 +16,19 @@ export const ProductCard = ({ product, className }) => {
 
   if (!product) return null;
 
-  const primaryImage = product.images?.find((img) => img.is_primary)?.imagekit_url
-    || product.images?.[0]?.imagekit_url
+  const getImageSrc = (img) => {
+    if (!img) return null;
+    if (typeof img === 'string') return img;
+    return img.imagekit_url || img.url || null;
+  };
+
+  const primaryImage = getImageSrc(product.images?.find((img) => img?.is_primary))
+    || getImageSrc(product.images?.[0])
+    || product.primary_image
     || null;
 
-  const secondaryImage = product.images?.find((img) => !img.is_primary && img.display_order > 0)?.imagekit_url
-    || product.images?.[1]?.imagekit_url
+  const secondaryImage = getImageSrc(product.images?.find((img) => !img?.is_primary && img?.display_order > 0))
+    || getImageSrc(product.images?.[1])
     || null;
 
   const effectivePrice = product.discount_price ?? product.base_price;

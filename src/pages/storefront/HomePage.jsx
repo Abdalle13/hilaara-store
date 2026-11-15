@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Truck, Shield, CreditCard, RefreshCw } from 'lucide-react';
+import { ArrowRight, Truck, Shield, CreditCard, RefreshCw, Sparkles } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Button } from '../../components/common/Button';
+import { REAL_PRODUCTS } from '../../data/catalog';
 
 // ─── Fade-in-up animation variant ─────────────────────────────────────────────
 const fadeUp = {
@@ -36,53 +37,124 @@ const BENEFITS = [
   },
 ];
 
-// ─── Empty state hero — renders when no products exist yet ────────────────────
-const EmptyHero = () => (
-  <section className="relative bg-charcoal overflow-hidden">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 flex flex-col lg:flex-row items-center gap-12">
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        className="text-white max-w-xl space-y-7 text-center lg:text-left"
-      >
-        <span className="inline-block text-xs uppercase tracking-widest-brand text-soft-beige/60 font-medium">
-          Modern Fashion for Somalia
-        </span>
-        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light leading-[1.1] tracking-tight">
-          Dressed for the
-          <br />
-          <span className="italic font-medium">modern era.</span>
-        </h1>
-        <p className="text-soft-beige/70 text-base sm:text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
-          Refined men's and women's fashion, designed for confident, contemporary style across Somalia.
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-          <Link to="/collections/women">
-            <Button variant="white" size="lg" icon={ArrowRight} iconPosition="right">
-              Women's Collection
-            </Button>
-          </Link>
-          <Link to="/collections/men">
-            <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:border-white/60">
-              Men's Collection
-            </Button>
-          </Link>
-        </div>
-      </motion.div>
+// ─── Editorial Hero with Right Fashion Photography ─────────────────────────────
+const EditorialHero = () => (
+  <section className="relative bg-[#141513] text-white overflow-hidden border-b border-white/10">
+    {/* Subtle ambient luxury glow */}
+    <div className="absolute top-0 right-1/4 w-96 h-96 bg-muted-olive/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="absolute -bottom-20 left-10 w-80 h-80 bg-warm-ivory/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Decorative geometric element when no photography available */}
-      <div className="hidden lg:block flex-1 relative h-96" aria-hidden="true">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative">
-            <div className="w-64 h-80 border border-white/10 rounded-xs" />
-            <div className="absolute -top-4 -right-4 w-64 h-80 border border-white/5 rounded-xs" />
-            <div className="absolute top-8 left-8 right-8 bottom-8 flex flex-col items-center justify-center space-y-3 text-white/20">
-              <img src="/brand/hilaara-mark-light.svg" alt="" className="w-16 h-16 opacity-30" />
-              <p className="text-xs uppercase tracking-widest-brand opacity-50">HILAARA</p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        {/* Left Editorial Copy (7 cols) */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left"
+        >
+          {/* Eyebrow Pill */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-semibold uppercase tracking-widest-brand text-soft-beige">
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-olive" />
+            <span>Horn of Africa • Modern Luxury Atelier</span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light leading-[1.08] tracking-tight text-white">
+            Dressed for the
+            <span className="font-serif italic font-normal block text-soft-beige mt-1">
+              modern era.
+            </span>
+          </h1>
+
+          {/* Description */}
+          <p className="text-soft-beige/80 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+            Refined contemporary silhouettes crafted with pure Egyptian linen, Horn silk-chiffon, and bespoke tailoring. Purpose-built for Somalia with nationwide express courier delivery and seamless mobile money payments.
+          </p>
+
+          {/* Dual CTAs */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start pt-2">
+            <Link to="/collections/women" className="w-full sm:w-auto">
+              <Button
+                variant="white"
+                size="lg"
+                icon={ArrowRight}
+                iconPosition="right"
+                className="w-full sm:w-auto font-medium"
+              >
+                Women's Collection
+              </Button>
+            </Link>
+            <Link to="/collections/men" className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 hover:border-white/60 font-medium"
+              >
+                Men's Collection
+              </Button>
+            </Link>
+          </div>
+
+          {/* Trust Highlights */}
+          <div className="pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left text-[11px] text-soft-beige/70">
+            <div>
+              <span className="text-white font-semibold block text-xs">Mogadishu & Hargeisa</span>
+              <span>1 to 2 business days</span>
+            </div>
+            <div>
+              <span className="text-white font-semibold block text-xs">Mobile Money</span>
+              <span>EVC Plus, ZAAD, eDahab</span>
+            </div>
+            <div className="hidden sm:block">
+              <span className="text-white font-semibold block text-xs">100% Guaranteed</span>
+              <span>Authentic Somali fabrics</span>
             </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Right Fashion Photography (5 cols) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="lg:col-span-5 relative flex justify-center"
+        >
+          <div className="relative w-full max-w-md lg:max-w-none aspect-[4/5] rounded-xs overflow-hidden border border-white/15 shadow-2xl group">
+            {/* Main Luxury Fashion Hero Image */}
+            <img
+              src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=90"
+              alt="HILAARA Autumn Winter Haute Collection"
+              className="w-full h-full object-cover object-center transform transition duration-700 group-hover:scale-105"
+              loading="eager"
+            />
+
+            {/* Gradient Scrim */}
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-black/20" />
+
+            {/* Floating Top Pill */}
+            <div className="absolute top-4 left-4 bg-charcoal/80 backdrop-blur-md border border-white/20 text-white text-[10px] uppercase tracking-wider-brand font-semibold px-3 py-1.5 rounded-full shadow-lg">
+              New Atelier Drop
+            </div>
+
+            {/* Floating Bottom Card */}
+            <div className="absolute bottom-4 left-4 right-4 bg-[#141513]/90 backdrop-blur-md border border-white/15 p-3.5 rounded-xs text-white shadow-xl flex items-center justify-between">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider-brand text-soft-beige/70 block">
+                  Featured Style
+                </span>
+                <span className="font-serif text-sm font-semibold text-white">
+                  Gold Thread Guntiino & Dirac
+                </span>
+              </div>
+              <Link to="/collections/women">
+                <span className="text-xs font-semibold uppercase tracking-wider-brand text-soft-beige hover:text-white flex items-center gap-1 transition">
+                  Shop <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   </section>
@@ -106,51 +178,43 @@ const CollectionGateway = () => (
       {[
         {
           label: "Men's Collection",
-          sub: "Tailored and refined essentials.",
+          sub: "Tailored linen caftans, khamiis, and safari blazers.",
           href: '/collections/men',
-          accent: '#191A17',
+          image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=900&q=80',
         },
         {
           label: "Women's Collection",
-          sub: "Contemporary silhouettes and textures.",
+          sub: "Silk blend diracs, embroidered guntiinos, and evening caftans.",
           href: '/collections/women',
-          accent: '#777B62',
+          image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80',
         },
       ].map((col) => (
         <motion.div
-          key={col.href}
+          key={col.label}
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
+          viewport={{ once: true, margin: '-60px' }}
+          className="group relative overflow-hidden rounded-xs aspect-[16/9] sm:aspect-[21/9] border border-soft-beige shadow-xs"
         >
+          <img
+            src={col.image}
+            alt={col.label}
+            className="absolute inset-0 w-full h-full object-cover transform transition duration-700 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-transparent" />
           <Link
             to={col.href}
-            className="group relative flex flex-col justify-end overflow-hidden rounded-xs"
-            style={{ minHeight: '380px' }}
+            className="relative z-10 p-6 sm:p-8 flex flex-col justify-end h-full text-white"
           >
-            {/* Background */}
-            <div
-              className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-              style={{ backgroundColor: col.accent, opacity: 0.08 }}
-            />
-            <div className="absolute inset-0 bg-soft-beige" />
-            {/* Placeholder visual */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-10" aria-hidden="true">
-              <span className="font-serif text-9xl font-medium text-charcoal select-none">
-                {col.label[0]}
-              </span>
-            </div>
-
-            {/* Content Overlay */}
-            <div className="relative p-8 bg-gradient-to-t from-charcoal/80 via-charcoal/30 to-transparent">
-              <span className="text-xs uppercase tracking-wider-brand text-white/70 font-medium">Collection</span>
-              <h3 className="font-serif text-2xl lg:text-3xl font-medium text-white mt-1">{col.label}</h3>
-              <p className="text-sm text-white/70 mt-1">{col.sub}</p>
-              <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold uppercase tracking-wider-brand text-white group-hover:gap-3 transition-all">
-                Shop Now <ArrowRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl font-medium text-white group-hover:text-soft-beige transition-colors">
+              {col.label}
+            </h3>
+            <p className="text-xs sm:text-sm text-soft-beige/80 mt-1">{col.sub}</p>
+            <span className="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold uppercase tracking-wider-brand text-soft-beige group-hover:gap-2.5 transition-all">
+              Discover Pieces <ArrowRight className="w-3.5 h-3.5" />
+            </span>
           </Link>
         </motion.div>
       ))}
@@ -188,17 +252,18 @@ const BenefitsStrip = () => (
 
 // ─── Main Homepage Component ──────────────────────────────────────────────────
 export const HomePage = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [newArrivals, setNewArrivals] = useState([]);
-  const [loadingFeatured, setLoadingFeatured] = useState(true);
-  const [loadingNew, setLoadingNew] = useState(true);
+  const initialFeatured = REAL_PRODUCTS.filter((p) => p.is_featured);
+  const initialNew = REAL_PRODUCTS.filter((p) => p.is_new_arrival);
+
+  const [featuredProducts, setFeaturedProducts] = useState(initialFeatured);
+  const [newArrivals, setNewArrivals] = useState(initialNew);
+  const [loadingFeatured, setLoadingFeatured] = useState(false);
+  const [loadingNew, setLoadingNew] = useState(false);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
-      setLoadingFeatured(false);
-      setLoadingNew(false);
+    if (!isSupabaseConfigured || !supabase) {
       return;
     }
 
@@ -215,9 +280,11 @@ export const HomePage = () => {
           .eq('is_featured', true)
           .order('created_at', { ascending: false })
           .limit(8);
-        setFeaturedProducts(data || []);
-      } finally {
-        setLoadingFeatured(false);
+        if (data && data.length > 0) {
+          setFeaturedProducts(data);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch featured products from Supabase, using catalog:', err);
       }
     };
 
@@ -234,9 +301,11 @@ export const HomePage = () => {
           .eq('is_new_arrival', true)
           .order('created_at', { ascending: false })
           .limit(8);
-        setNewArrivals(data || []);
-      } finally {
-        setLoadingNew(false);
+        if (data && data.length > 0) {
+          setNewArrivals(data);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch new arrivals from Supabase, using catalog:', err);
       }
     };
 
@@ -253,8 +322,8 @@ export const HomePage = () => {
 
   return (
     <div className="bg-warm-ivory">
-      {/* Hero */}
-      <EmptyHero />
+      {/* Editorial Luxury Hero with Right Photography */}
+      <EditorialHero />
 
       {/* Collection Gateways */}
       <CollectionGateway />
@@ -269,22 +338,18 @@ export const HomePage = () => {
           className="flex items-end justify-between mb-10"
         >
           <div className="space-y-2">
-            <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-medium">Handpicked</span>
-            <h2 className="font-serif text-3xl lg:text-4xl font-medium text-charcoal">Featured Pieces</h2>
+            <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-medium">Curated Pieces</span>
+            <h2 className="font-serif text-3xl lg:text-4xl font-medium text-charcoal">Featured Collection</h2>
           </div>
-          <Link to="/collections/featured" className="hidden sm:flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider-brand text-charcoal hover:text-muted-olive transition-colors">
+          <Link
+            to="/collections/featured"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider-brand text-charcoal hover:text-muted-olive transition-colors"
+          >
             View All <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
 
-        {!loadingFeatured && featuredProducts.length === 0 ? (
-          <div className="text-center py-16 space-y-3 border border-dashed border-soft-beige rounded-xs">
-            <p className="text-sm font-medium text-muted-text">No featured products yet.</p>
-            <p className="text-xs text-muted-text/70">Add products in the Admin Console and mark them as featured.</p>
-          </div>
-        ) : (
-          <ProductGrid products={featuredProducts} loading={loadingFeatured} skeletonCount={4} />
-        )}
+        <ProductGrid products={featuredProducts} loading={loadingFeatured} skeletonCount={4} />
       </section>
 
       {/* Benefits */}
@@ -303,19 +368,15 @@ export const HomePage = () => {
             <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-medium">Just In</span>
             <h2 className="font-serif text-3xl lg:text-4xl font-medium text-charcoal">New Arrivals</h2>
           </div>
-          <Link to="/collections/new-arrivals" className="hidden sm:flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider-brand text-charcoal hover:text-muted-olive transition-colors">
+          <Link
+            to="/collections/new-arrivals"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider-brand text-charcoal hover:text-muted-olive transition-colors"
+          >
             View All <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
 
-        {!loadingNew && newArrivals.length === 0 ? (
-          <div className="text-center py-16 space-y-3 border border-dashed border-soft-beige rounded-xs">
-            <p className="text-sm font-medium text-muted-text">No new arrivals yet.</p>
-            <p className="text-xs text-muted-text/70">Add products to begin building your catalog.</p>
-          </div>
-        ) : (
-          <ProductGrid products={newArrivals} loading={loadingNew} skeletonCount={4} />
-        )}
+        <ProductGrid products={newArrivals} loading={loadingNew} skeletonCount={4} />
       </section>
 
       {/* Brand Story */}
@@ -332,10 +393,10 @@ export const HomePage = () => {
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-white leading-tight">
               Fashion with intention.
               <br />
-              <span className="italic font-medium">Made for Somalia.</span>
+              <span className="italic font-medium text-soft-beige">Made for Somalia.</span>
             </h2>
             <p className="text-soft-beige/70 text-sm sm:text-base leading-relaxed">
-              HILAARA brings a refined, contemporary wardrobe to Somalia. Every garment is chosen for quality, versatility, and enduring style. No shortcuts. No excess. Just clothing made to be worn.
+              HILAARA brings a refined, contemporary wardrobe to Somalia. Every garment is chosen for quality, versatility, and enduring style. No shortcuts. No excess. Just clothing made to be worn with poise.
             </p>
             <div className="pt-2">
               <Link to="/shop">
@@ -392,3 +453,4 @@ export const HomePage = () => {
   );
 };
 
+export default HomePage;

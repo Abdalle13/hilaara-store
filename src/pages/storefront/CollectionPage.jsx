@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Button } from '../../components/common/Button';
+import { REAL_PRODUCTS } from '../../data/catalog';
 
 // Collection slug -> display configuration
 const COLLECTION_CONFIG = {
@@ -50,9 +51,28 @@ export const CollectionPage = () => {
   const { slug } = useParams();
   const config = COLLECTION_CONFIG[slug];
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
+  // Get initial fallback catalog for this collection
+  const getCatalogFallback = (s) => {
+    switch (s) {
+      case 'men':
+        return REAL_PRODUCTS.filter((p) => p.gender === 'men');
+      case 'women':
+        return REAL_PRODUCTS.filter((p) => p.gender === 'women');
+      case 'new-arrivals':
+        return REAL_PRODUCTS.filter((p) => p.is_new_arrival);
+      case 'featured':
+        return REAL_PRODUCTS.filter((p) => p.is_featured);
+      case 'sale':
+        return REAL_PRODUCTS.filter((p) => p.discount_price && p.discount_price < p.base_price);
+      default:
+        return REAL_PRODUCTS;
+    }
+  };
+
+  const initialItems = getCatalogFallback(slug);
+  const [products, setProducts] = useState(initialItems);
+  const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(initialItems.length);
 
   useEffect(() => {
     if (!config) {
@@ -60,7 +80,11 @@ export const CollectionPage = () => {
       return;
     }
 
-    if (!isSupabaseConfigured) {
+    const fallback = getCatalogFallback(slug);
+    setProducts(fallback);
+    setTotalCount(fallback.length);
+
+    if (!isSupabaseConfigured || !supabase) {
       setLoading(false);
       return;
     }
@@ -77,10 +101,12 @@ export const CollectionPage = () => {
         query = config.filter(query);
 
         const { data, count } = await query;
-        setProducts(data || []);
-        setTotalCount(count || 0);
+        if (data && data.length > 0) {
+          setProducts(data);
+          setTotalCount(count || data.length);
+        }
       } catch {
-        setProducts([]);
+        // Fallback remains active
       } finally {
         setLoading(false);
       }
