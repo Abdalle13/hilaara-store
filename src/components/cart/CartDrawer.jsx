@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Minus, Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -9,6 +9,19 @@ import { buildImageUrl, IMAGE_PRESETS } from '../../lib/imagekit';
 
 export const CartDrawer = ({ isOpen, onClose }) => {
   const { items, totalItems, subtotal, updateQuantity, removeItem } = useCart();
+  const navigate = useNavigate();
+
+  const handleProceedToCheckout = (e) => {
+    e.preventDefault();
+    if (onClose) onClose();
+    navigate('/checkout');
+  };
+
+  const handleViewFullCart = (e) => {
+    e.preventDefault();
+    if (onClose) onClose();
+    navigate('/cart');
+  };
 
   return (
     <AnimatePresence>
@@ -176,22 +189,24 @@ export const CartDrawer = ({ isOpen, onClose }) => {
                 </div>
                 <p className="text-xs text-muted-text">Delivery fee calculated at checkout based on your location.</p>
                 <div className="space-y-2">
-                  <Link to="/checkout" onClick={onClose}>
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      className="w-full"
-                      icon={ArrowRight}
-                      iconPosition="right"
-                    >
-                      Proceed to Checkout
-                    </Button>
-                  </Link>
-                  <Link to="/cart" onClick={onClose}>
-                    <Button variant="outline" size="md" className="w-full">
-                      View Full Cart
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="w-full"
+                    icon={ArrowRight}
+                    iconPosition="right"
+                    onClick={handleProceedToCheckout}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    className="w-full"
+                    onClick={handleViewFullCart}
+                  >
+                    View Full Cart
+                  </Button>
                 </div>
               </div>
             )}

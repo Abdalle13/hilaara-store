@@ -131,6 +131,7 @@ const PATRON_REVIEWS = [
     author: 'Fadumo Xasan A.',
     city: 'Mogadishu (Waberi)',
     item: 'Somali Silk Blend Dirac & Scarf Set',
+    rating: 5,
   },
   {
     quote:
@@ -138,6 +139,7 @@ const PATRON_REVIEWS = [
     author: 'Eng. Guled M. Warsame',
     city: 'Hargeisa (Jigjiga Yar)',
     item: 'Tailored Pure Linen Caftan',
+    rating: 5,
   },
   {
     quote:
@@ -145,164 +147,122 @@ const PATRON_REVIEWS = [
     author: 'Ayan Dahir Shire',
     city: 'Garowe (Puntland)',
     item: 'Embroidered Gold Thread Guntiino',
+    rating: 5,
+  },
+  {
+    quote:
+      'I ordered the Safari Blazer for an official summit in Bosaso. The cut, breathable weave, and stitching surpassed international bespoke standards.',
+    author: 'Khadar Cismaan K.',
+    city: 'Bosaso (Bari)',
+    item: "Men's Safari Blazer & Caftan",
+    rating: 5,
+  },
+  {
+    quote:
+      'The deep crimson velvet Dirac has a royal weight and delicate luster. Fast dispatch to Kismayo and seamless Zaad payment.',
+    author: 'Maryan Cabdiraxmaan',
+    city: 'Kismayo (Jubbada Hoose)',
+    item: 'Crimson Velvet Regal Dirac',
+    rating: 5,
+  },
+  {
+    quote:
+      'Superb craftsmanship that honors traditional Somali elegance while fitting contemporary luxury wardrobes. Delivery was prompt and packaging was immaculate.',
+    author: 'Dr. Bilal Nuur H.',
+    city: 'Borama (Awdal)',
+    item: 'Handcrafted Heritage Macawis',
+    rating: 5,
   },
 ];
 
-// ─── 1. Upgraded Interactive Multi-Slide Hero ─────────────────────────────────
+// ─── 1. Full-Bleed Immersive Editorial Hero with Silent Animation ────────────
 const EditorialHero = () => {
   const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const slide = HERO_SLIDES[current];
 
-  // Auto-slide every 7.5 seconds when not hovered
+  // Silent automatic cross-fade animation every 7 seconds
   useEffect(() => {
-    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 7500);
+    }, 7000);
     return () => clearInterval(timer);
-  }, [isPaused]);
-
-  const handlePrev = () => {
-    setCurrent((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
-  };
+  }, []);
 
   return (
-    <section
-      className="relative bg-[#121311] text-white overflow-hidden border-b border-white/10"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Ambient background glows */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-muted-olive/12 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-24 -left-20 w-[500px] h-[500px] bg-warm-ivory/5 rounded-full blur-[100px] pointer-events-none" />
+    <section className="relative min-h-[640px] sm:min-h-[720px] lg:min-h-[820px] flex items-center justify-center overflow-hidden bg-black text-white">
+      {/* Background Image with Silent Cross-Fade Animation */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={slide.id}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img
+            src={slide.image}
+            alt={slide.tag}
+            className="w-full h-full object-cover object-center"
+            loading="eager"
+          />
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 sm:py-16 lg:py-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center min-h-[580px]">
-          
-          {/* Left Column: Editorial Narrative (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-6 sm:space-y-8 text-center lg:text-left">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={slide.id + '-text'}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="space-y-6 sm:space-y-7"
-              >
-                {/* Main Headline */}
-                <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.05] tracking-tight text-white">
-                  {slide.title}
-                  <span className="font-serif italic font-normal block text-soft-beige mt-1.5 sm:mt-2">
-                    {slide.titleItalic}
-                  </span>
-                </h1>
+      {/* Cinematic Luxury Dark Scrims */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/35 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-10" />
 
-                {/* Subtitle */}
-                <p className="text-soft-beige/85 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
-                  {slide.description}
-                </p>
+      {/* Main Editorial Narrative Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-20 w-full">
+        <div className="max-w-2xl lg:max-w-3xl space-y-6 sm:space-y-7">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={slide.id + '-content'}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="space-y-6 sm:space-y-7"
+            >
+              {/* Main Headline */}
+              <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-light leading-[1.05] tracking-tight text-white">
+                {slide.title}
+                <span className="font-serif italic font-normal block text-soft-beige mt-2 sm:mt-3">
+                  {slide.titleItalic}
+                </span>
+              </h1>
 
-                {/* Dual Call-to-Actions */}
-                <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 justify-center lg:justify-start pt-1">
-                  <Link to={slide.primaryCta.href} className="w-full sm:w-auto">
-                    <Button
-                      variant="white"
-                      size="lg"
-                      icon={ArrowRight}
-                      iconPosition="right"
-                      className="w-full sm:w-auto font-medium shadow-card"
-                    >
-                      {slide.primaryCta.label}
-                    </Button>
-                  </Link>
-                  <Link to={slide.secondaryCta.href} className="w-full sm:w-auto">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 hover:border-white/60 font-medium"
-                    >
-                      {slide.secondaryCta.label}
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+              {/* Subtitle */}
+              <p className="text-soft-beige/90 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl font-light">
+                {slide.description}
+              </p>
 
-            {/* Slide Navigation Controls & Interactive Counter */}
-            <div className="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              {/* Slide Selector Indicators */}
-              <div className="flex items-center justify-center lg:justify-start gap-2.5">
-                {HERO_SLIDES.map((s, idx) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setCurrent(idx)}
-                    className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono transition-all ${
-                      current === idx
-                        ? 'bg-white/15 text-white border border-white/30'
-                        : 'text-white/40 hover:text-white/80 border border-transparent'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
+              {/* Dual Call-to-Actions */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+                <Link to={slide.primaryCta.href}>
+                  <Button
+                    variant="white"
+                    size="lg"
+                    icon={ArrowRight}
+                    iconPosition="right"
+                    className="w-full sm:w-auto font-medium shadow-card"
                   >
-                    <span>0{idx + 1}</span>
-                    {current === idx && (
-                      <span className="hidden sm:inline text-[10px] font-sans uppercase tracking-wider text-soft-beige font-semibold">
-                        {s.tag.split(' ')[0]}
-                      </span>
-                    )}
-                  </button>
-                ))}
+                    {slide.primaryCta.label}
+                  </Button>
+                </Link>
+                <Link to={slide.secondaryCta.href}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto border-white/40 text-white hover:bg-white/10 hover:border-white/70 font-medium backdrop-blur-xs"
+                  >
+                    {slide.secondaryCta.label}
+                  </Button>
+                </Link>
               </div>
-
-              {/* Prev / Next Buttons */}
-              <div className="flex items-center justify-center lg:justify-end gap-2 text-white/70">
-                <button
-                  onClick={handlePrev}
-                  className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.04] hover:bg-white/15 hover:border-white/30 text-white flex items-center justify-center transition"
-                  aria-label="Previous slide"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.04] hover:bg-white/15 hover:border-white/30 text-white flex items-center justify-center transition"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Clean Editorial Visual Canvas (5 cols) */}
-          <div className="lg:col-span-5 relative flex justify-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={slide.id + '-image'}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full max-w-md lg:max-w-none aspect-[4/5] rounded-xs overflow-hidden border border-white/20 shadow-2xl group"
-              >
-                {/* Background Image with Slow Luxury Scale */}
-                <img
-                  src={slide.image}
-                  alt={slide.tag}
-                  className="w-full h-full object-cover object-center transform transition-transform duration-1000 group-hover:scale-105"
-                  loading="eager"
-                />
-
-                {/* Subtle Luxury Gradient Scrim */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121311]/60 via-transparent to-transparent pointer-events-none" />
-              </motion.div>
-            </AnimatePresence>
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>
@@ -575,47 +535,108 @@ const CraftManifesto = () => (
   </section>
 );
 
-// ─── 6. Patron Testimonials ───────────────────────────────────────────────────
-const PatronReviews = () => (
-  <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-    <div className="text-center mb-12 space-y-2">
-      <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-semibold">
-        Client Testimonials
-      </span>
-      <h2 className="font-serif text-3xl sm:text-4xl font-normal text-charcoal">
-        Words from Our Patrons
-      </h2>
-    </div>
+// ─── 6. Animated Patron Testimonials ──────────────────────────────────────────
+const PatronReviews = () => {
+  const [activePage, setActivePage] = useState(0);
+  const reviewsPerPage = 3;
+  const totalPages = Math.ceil(PATRON_REVIEWS.length / reviewsPerPage);
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {PATRON_REVIEWS.map((rev, idx) => (
-        <div
-          key={idx}
-          className="bg-white border border-soft-beige p-6 sm:p-8 rounded-xs shadow-xs flex flex-col justify-between space-y-6"
-        >
-          <div className="space-y-4">
-            <div className="flex items-center gap-1 text-amber-400">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-              ))}
-            </div>
-            <p className="text-xs sm:text-sm text-charcoal/90 leading-relaxed italic">
-              "{rev.quote}"
-            </p>
-          </div>
+  // Auto-advance reviews smoothly every 6.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActivePage((prev) => (prev + 1) % totalPages);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [totalPages]);
 
-          <div className="pt-4 border-t border-soft-beige/60">
-            <span className="text-xs font-semibold text-charcoal block">{rev.author}</span>
-            <span className="text-[11px] text-muted-text block">{rev.city}</span>
-            <span className="text-[10px] text-muted-olive font-medium mt-1 block">
-              Purchased: {rev.item}
-            </span>
-          </div>
+  const visibleReviews = PATRON_REVIEWS.slice(
+    activePage * reviewsPerPage,
+    activePage * reviewsPerPage + reviewsPerPage
+  );
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+        <div className="space-y-2">
+          <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-semibold">
+            Client Testimonials
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-normal text-charcoal">
+            Words from Our Patrons
+          </h2>
+          <p className="text-muted-text text-xs sm:text-sm">
+            Authentic reflections from valued clients across Mogadishu, Hargeisa, Garowe, Bosaso, and beyond.
+          </p>
         </div>
-      ))}
-    </div>
-  </section>
-);
+
+        {/* Carousel Controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActivePage((p) => (p === 0 ? totalPages - 1 : p - 1))}
+            className="w-9 h-9 rounded-full border border-soft-beige bg-white hover:bg-charcoal hover:text-white text-charcoal flex items-center justify-center transition-colors shadow-xs"
+            aria-label="Previous testimonials"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-1.5 px-2 text-xs font-mono text-muted-text">
+            <span>0{activePage + 1}</span>
+            <span>/</span>
+            <span>0{totalPages}</span>
+          </div>
+          <button
+            onClick={() => setActivePage((p) => (p + 1) % totalPages)}
+            className="w-9 h-9 rounded-full border border-soft-beige bg-white hover:bg-charcoal hover:text-white text-charcoal flex items-center justify-center transition-colors shadow-xs"
+            aria-label="Next testimonials"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activePage}
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -24 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          {visibleReviews.map((rev, idx) => (
+            <div
+              key={idx}
+              className="bg-white border border-soft-beige p-7 sm:p-8 rounded-xs shadow-xs hover:shadow-card hover:border-charcoal/20 transition-all flex flex-col justify-between space-y-6"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {Array.from({ length: rev.rating || 5 }).map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-olive px-2 py-0.5 rounded-full bg-muted-olive/10">
+                    Verified Patron ✓
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-charcoal/90 leading-relaxed italic font-light">
+                  "{rev.quote}"
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-soft-beige/60">
+                <span className="text-xs font-semibold text-charcoal block">{rev.author}</span>
+                <span className="text-[11px] text-muted-text block">{rev.city}</span>
+                <span className="text-[10px] text-muted-olive font-medium mt-1 block">
+                  Purchased: {rev.item}
+                </span>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+    </section>
+  );
+};
 
 // ─── 7. Main Homepage Export ──────────────────────────────────────────────────
 export const HomePage = () => {
@@ -643,18 +664,37 @@ export const HomePage = () => {
       {/* 4. Interactive Curated Product Showcase */}
       <CuratedShowcase />
 
-      {/* 5. Benefits Bar */}
-      <section className="bg-soft-beige/40 border-y border-soft-beige py-14">
+      {/* 5. Benefits & Standards Section */}
+      <section className="bg-soft-beige/40 border-y border-soft-beige py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-2.5">
+            <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-semibold">
+              The HILAARA Standards
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal text-charcoal">
+              Nationwide Express Logistics & Guarantee
+            </h2>
+            <p className="text-muted-text text-xs sm:text-sm leading-relaxed">
+              Craftsmanship, expedited dispatch, and seamless regional fulfillment across Somalia and beyond.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {BENEFITS.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex flex-col items-center text-center space-y-3">
-                <div className="w-12 h-12 rounded-full bg-charcoal/8 border border-charcoal/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-muted-olive" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-sm font-semibold text-charcoal">{title}</h3>
-                  <p className="text-xs text-muted-text leading-relaxed">{desc}</p>
+              <div
+                key={title}
+                className="bg-white border border-soft-beige p-7 sm:p-8 rounded-xs shadow-xs hover:shadow-card hover:border-charcoal/30 transition-all duration-300 flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-warm-ivory border border-soft-beige/80 flex items-center justify-center text-muted-olive group-hover:bg-charcoal group-hover:text-white transition-colors duration-300">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-serif text-lg font-medium text-charcoal mt-5 mb-2 group-hover:text-muted-olive transition-colors">
+                    {title}
+                  </h3>
+                  <p className="text-xs text-muted-text leading-relaxed">
+                    {desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -665,7 +705,7 @@ export const HomePage = () => {
       {/* 6. The HILAARA Craft & Fabric Standards */}
       <CraftManifesto />
 
-      {/* 7. Patron Testimonials */}
+      {/* 7. Animated Patron Testimonials */}
       <PatronReviews />
 
       {/* 8. VIP Atelier Club Newsletter */}

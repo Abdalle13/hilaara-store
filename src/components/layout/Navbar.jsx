@@ -34,10 +34,11 @@ export const Navbar = () => {
   const [accountOpen, setAccountOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // Close mobile menu on route change
+  // Close mobile menu, account dropdown, and cart drawer on route change
   useEffect(() => {
     setMobileOpen(false);
     setAccountOpen(false);
+    setCartOpen(false);
   }, [location.pathname]);
 
   // Sticky scroll state
