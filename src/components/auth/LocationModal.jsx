@@ -220,3 +220,4 @@ export const LocationModal = ({ isOpen, onClose, user, profile, onSave }) => {
 };
 
 export default LocationModal;
+

@@ -4,11 +4,13 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
-import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Lock, ArrowRight, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 export const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -54,19 +56,14 @@ export const ResetPasswordPage = () => {
       {/* Luxury All-in-One Enclosed Card */}
       <div className="bg-white rounded-md shadow-card border border-soft-beige p-7 sm:p-10 space-y-6">
         
-        {/* Brand Mark & Titles inside the card */}
-        <div className="text-center space-y-3 pb-2 border-b border-soft-beige/60">
-          <Link to="/" className="inline-flex items-center justify-center p-2 rounded-full bg-warm-ivory/60 hover:bg-warm-ivory transition-colors">
-            <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-8 w-auto" />
-          </Link>
-          <div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
-              Set New Password
-            </h1>
-            <p className="text-xs uppercase tracking-wider-brand text-muted-text mt-1 font-medium">
-              Create a secure password for your account
-            </p>
-          </div>
+        {/* Card Header */}
+        <div className="text-center space-y-1 pb-4 border-b border-soft-beige/60">
+          <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
+            Set New Password
+          </h1>
+          <p className="text-xs uppercase tracking-wider text-muted-text font-medium">
+            Create a secure password for your account
+          </p>
         </div>
 
         {isSuccess ? (
@@ -94,27 +91,49 @@ export const ResetPasswordPage = () => {
               </div>
             )}
 
-            <Input
-              label="New Password (min. 8 characters)"
-              type="password"
-              required
-              autoComplete="new-password"
-              icon={Lock}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <Input
+                label="New Password (min. 8 characters)"
+                type={showPassword ? 'text' : 'password'}
+                required
+                autoComplete="new-password"
+                icon={Lock}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-[34px] text-muted-text hover:text-charcoal transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
 
-            <Input
-              label="Confirm New Password"
-              type="password"
-              required
-              autoComplete="new-password"
-              icon={Lock}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <Input
+                label="Confirm New Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                required
+                autoComplete="new-password"
+                icon={Lock}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                className="absolute right-3 top-[34px] text-muted-text hover:text-charcoal transition-colors"
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
 
             <Button
               type="submit"

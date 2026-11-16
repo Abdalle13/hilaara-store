@@ -44,19 +44,14 @@ export const ForgotPasswordPage = () => {
       {/* Luxury All-in-One Enclosed Card */}
       <div className="bg-white rounded-md shadow-card border border-soft-beige p-7 sm:p-10 space-y-6">
         
-        {/* Brand Mark & Titles inside the card */}
-        <div className="text-center space-y-3 pb-2 border-b border-soft-beige/60">
-          <Link to="/" className="inline-flex items-center justify-center p-2 rounded-full bg-warm-ivory/60 hover:bg-warm-ivory transition-colors">
-            <img src="/brand/hilaara-mark-dark.svg" alt="HILAARA" className="h-8 w-auto" />
-          </Link>
-          <div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
-              Recover Password
-            </h1>
-            <p className="text-xs uppercase tracking-wider-brand text-muted-text mt-1 font-medium">
-              Enter your email to receive recovery instructions
-            </p>
-          </div>
+        {/* Card Header */}
+        <div className="text-center space-y-1 pb-4 border-b border-soft-beige/60">
+          <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-charcoal">
+            Recover Password
+          </h1>
+          <p className="text-xs uppercase tracking-wider text-muted-text font-medium">
+            Enter your email to receive recovery instructions
+          </p>
         </div>
 
         {isSubmitted ? (
