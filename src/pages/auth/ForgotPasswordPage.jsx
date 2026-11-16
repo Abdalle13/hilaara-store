@@ -8,6 +8,7 @@ import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
 export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
+  const [targetEmail, setTargetEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -19,16 +20,18 @@ export const ForgotPasswordPage = () => {
     e.preventDefault();
     setError('');
 
-    if (!email) {
-      setError('Please provide your registered email address.');
+    const cleanInput = (email || '').trim();
+    if (!cleanInput) {
+      setError('Please provide your registered email address or username.');
       return;
     }
 
     setIsLoading(true);
     try {
-      await resetPassword(email);
+      const result = await resetPassword(cleanInput);
+      setTargetEmail(result?.targetEmail || cleanInput);
       setIsSubmitted(true);
-      toast.success('Password reset instructions have been dispatched.');
+      toast.success('Password reset link has been dispatched to your email.');
     } catch (err) {
       console.error('Password reset error:', err);
       const message = err.message || 'Unable to process reset request. Please verify the email.';
@@ -59,9 +62,9 @@ export const ForgotPasswordPage = () => {
             <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="font-serif text-lg font-medium text-charcoal">Instructions Dispatched</h3>
+            <h3 className="font-serif text-lg font-medium text-charcoal">Recovery Link Dispatched</h3>
             <p className="text-xs text-muted-text leading-relaxed">
-              If an account exists for <span className="font-semibold text-charcoal">{email}</span>, you will receive a secure password recovery link shortly.
+              A secure password reset link has been dispatched to <span className="font-semibold text-charcoal">{targetEmail || email}</span>. Please check your inbox and spam folder.
             </p>
             <div className="pt-2">
               <Link to="/login">
@@ -80,14 +83,14 @@ export const ForgotPasswordPage = () => {
             )}
 
             <Input
-              label="Registered Email"
-              type="email"
+              label="Registered Email or Username"
+              type="text"
               required
               autoComplete="email"
               icon={Mail}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@domain.com"
+              placeholder="e.g. abdalle13 or you@domain.com"
             />
 
             <Button
@@ -97,7 +100,7 @@ export const ForgotPasswordPage = () => {
               className="w-full mt-2"
               isLoading={isLoading}
             >
-              Dispatch Instructions
+              Verify & Send Reset Link
             </Button>
           </form>
         )}

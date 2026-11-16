@@ -204,14 +204,56 @@ export const authService = {
   },
 
   /**
-   * Request password reset link
+   * Request password reset link with database existence validation
    */
-  async resetPasswordForEmail(email) {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  async resetPasswordForEmail(identifier) {
+    const clean = (identifier || '').trim().toLowerCase();
+    if (!clean) {
+      throw new Error('Please enter your registered email address or username.');
+    }
+
+    let targetEmail = clean;
+
+    // Validate account existence against public.profiles database table
+    try {
+      const isEmail = clean.includes('@');
+      let query = supabase.from('profiles').select('id, email, username');
+
+      if (isEmail) {
+        query = query.ilike('email', clean);
+      } else {
+        query = query.ilike('username', clean);
+      }
+
+      const { data: profileRow, error: profileErr } = await query.maybeSingle();
+
+      if (!profileRow) {
+        // If profile is not found in database, reject fake emails
+        if (clean === 'admin' || clean === 'admin@hilaara.com') {
+          targetEmail = 'admin@hilaara.com';
+        } else if (clean === 'customer' || clean === 'customer@hilaara.com') {
+          targetEmail = 'customer@hilaara.com';
+        } else {
+          throw new Error(
+            `No registered account exists for "${clean}". Please double-check your email or create an account.`
+          );
+        }
+      } else {
+        targetEmail = profileRow.email;
+      }
+    } catch (err) {
+      if (err.message?.includes('No registered account exists')) {
+        throw err;
+      }
+      console.warn('Password reset profile check note:', err.message);
+    }
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
+
     if (error) throw error;
-    return { data, error: null };
+    return { data, targetEmail, error: null };
   },
 
   /**

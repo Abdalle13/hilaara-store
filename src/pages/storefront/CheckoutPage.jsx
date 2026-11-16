@@ -21,23 +21,12 @@ import {
   processSimulation,
   recordPayOnDelivery,
 } from '../../services/paymentService';
+import { SOMALIA_REGIONS, getDistrictsByRegionName } from '../../data/somaliaLocations';
 
 const STEPS = [
   { id: 1, label: 'Contact', icon: User },
   { id: 2, label: 'Shipping', icon: MapPin },
   { id: 3, label: 'Payment', icon: CreditCard },
-];
-
-const SOMALI_CITIES = [
-  { name: 'Mogadishu', zone: 'Mogadishu Metropolitan' },
-  { name: 'Hargeisa', zone: 'Somaliland Urban' },
-  { name: 'Garowe', zone: 'Puntland Hubs' },
-  { name: 'Bosaso', zone: 'Puntland Hubs' },
-  { name: 'Kismayo', zone: 'Southern Centers' },
-  { name: 'Baidoa', zone: 'Southern Centers' },
-  { name: 'Borama', zone: 'Somaliland Urban' },
-  { name: 'Berbera', zone: 'Somaliland Urban' },
-  { name: 'Burao', zone: 'Somaliland Urban' },
 ];
 
 export const CheckoutPage = () => {
@@ -59,8 +48,8 @@ export const CheckoutPage = () => {
   });
 
   const [shippingAddress, setShippingAddress] = useState({
-    city: 'Mogadishu',
-    district: '',
+    city: 'Banaadir',
+    district: 'Hodan',
     streetAddress: '',
     deliveryInstructions: '',
   });
@@ -83,6 +72,20 @@ export const CheckoutPage = () => {
         phone: prev.phone || profile.phone || '',
         email: prev.email || user?.email || '',
       }));
+      if (profile.city) {
+        const regionMatch = SOMALIA_REGIONS.find(
+          (r) =>
+            r.name.toLowerCase() === profile.city.toLowerCase() ||
+            r.capital.toLowerCase() === profile.city.toLowerCase()
+        );
+        if (regionMatch) {
+          setShippingAddress((prev) => ({
+            ...prev,
+            city: regionMatch.name,
+            district: profile.district || regionMatch.districts[0] || 'Hodan',
+          }));
+        }
+      }
     }
   }, [profile, user]);
 
@@ -97,16 +100,21 @@ export const CheckoutPage = () => {
     });
   }, []);
 
-  // Update shipping method when city changes
+  // Update shipping method when region/city changes
   const handleCityChange = (newCity) => {
-    const cityConfig = SOMALI_CITIES.find((c) => c.name === newCity);
-    const targetZoneName = cityConfig ? cityConfig.zone : 'Mogadishu Metropolitan';
+    const region = SOMALIA_REGIONS.find((r) => r.name === newCity) || SOMALIA_REGIONS[0];
+    const targetZoneName = region ? region.zone : 'Mogadishu Metropolitan';
     const zone = shippingZones.find((z) => z.name === targetZoneName) || shippingZones[0];
 
     if (zone?.methods?.[0]) {
       setSelectedMethod(zone.methods[0]);
     }
-    setShippingAddress((prev) => ({ ...prev, city: newCity }));
+    const districts = getDistrictsByRegionName(newCity);
+    setShippingAddress((prev) => ({
+      ...prev,
+      city: newCity,
+      district: districts[0] || '',
+    }));
   };
 
   // Redirect if cart is empty
@@ -403,24 +411,32 @@ export const CheckoutPage = () => {
                       <select
                         value={shippingAddress.city}
                         onChange={(e) => handleCityChange(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-sm bg-warm-ivory border border-soft-beige rounded-xs focus:outline-none focus:border-charcoal text-charcoal"
+                        className="w-full px-3.5 py-2.5 text-sm bg-warm-ivory border border-soft-beige rounded-xs focus:outline-none focus:border-charcoal text-charcoal font-medium"
                       >
-                        {SOMALI_CITIES.map((c) => (
-                          <option key={c.name} value={c.name}>
-                            {c.name} ({c.zone})
+                        {SOMALIA_REGIONS.map((r) => (
+                          <option key={r.id} value={r.name}>
+                            {r.somaliName} ({r.zone})
                           </option>
                         ))}
                       </select>
                     </div>
 
-                    <Input
-                      label="District / Neighborhood"
-                      required
-                      placeholder="e.g. Hodan / Waberi / Jigjiga Yar"
-                      value={shippingAddress.district}
-                      onChange={(e) => setShippingAddress({ ...shippingAddress, district: e.target.value })}
-                      error={errors.district}
-                    />
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold uppercase tracking-wider-brand text-charcoal block">
+                        District (Degmada) <span className="text-status-error">*</span>
+                      </label>
+                      <select
+                        value={shippingAddress.district}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, district: e.target.value })}
+                        className="w-full px-3.5 py-2.5 text-sm bg-warm-ivory border border-soft-beige rounded-xs focus:outline-none focus:border-charcoal text-charcoal"
+                      >
+                        {getDistrictsByRegionName(shippingAddress.city).map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <Input
