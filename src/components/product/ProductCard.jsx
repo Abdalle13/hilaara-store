@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Check } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import { formatPrice } from '../../utils/formatters';
 import { buildImageUrl } from '../../lib/imagekit';
@@ -11,8 +12,11 @@ import { Badge } from '../common/Badge';
 
 export const ProductCard = ({ product, className }) => {
   const { toggle, isWishlisted } = useWishlist();
+  const { addItem } = useCart();
   const toast = useToast();
+  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   if (!product) return null;
 
@@ -22,14 +26,16 @@ export const ProductCard = ({ product, className }) => {
     return img.imagekit_url || img.url || null;
   };
 
-  const primaryImage = getImageSrc(product.images?.find((img) => img?.is_primary))
-    || getImageSrc(product.images?.[0])
-    || product.primary_image
-    || null;
+  const primaryImage =
+    getImageSrc(product.images?.find((img) => img?.is_primary)) ||
+    getImageSrc(product.images?.[0]) ||
+    product.primary_image ||
+    null;
 
-  const secondaryImage = getImageSrc(product.images?.find((img) => !img?.is_primary && img?.display_order > 0))
-    || getImageSrc(product.images?.[1])
-    || null;
+  const secondaryImage =
+    getImageSrc(product.images?.find((img) => !img?.is_primary && img?.display_order > 0)) ||
+    getImageSrc(product.images?.[1]) ||
+    null;
 
   const effectivePrice = product.discount_price ?? product.base_price;
   const hasDiscount = product.discount_price && product.discount_price < product.base_price;
@@ -43,7 +49,25 @@ export const ProductCard = ({ product, className }) => {
     e.preventDefault();
     e.stopPropagation();
     toggle(product.id);
-    toast.info(wishlisted ? `Removed from wishlist.` : `Added to wishlist.`);
+    toast.info(wishlisted ? 'Removed from wishlist.' : 'Saved to wishlist.');
+  };
+
+  const handleQuickAdd = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Select first active variant if available
+    const activeVariant = product.variants?.find((v) => v.is_active) || product.variants?.[0] || null;
+    addItem(product, activeVariant, 1);
+    setJustAdded(true);
+    toast.success(`${product.name} added to your cart.`);
+    setTimeout(() => setJustAdded(false), 2000);
+  };
+
+  const handleViewDetails = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/products/${product.slug}`);
   };
 
   return (
@@ -52,7 +76,7 @@ export const ProductCard = ({ product, className }) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image Container */}
+      {/* Image Container — completely clean by default, reveals actions on hover */}
       <Link
         to={`/products/${product.slug}`}
         className="relative block overflow-hidden bg-soft-beige/40 aspect-[3/4] rounded-xs"
@@ -64,7 +88,7 @@ export const ProductCard = ({ product, className }) => {
             src={buildImageUrl(primaryImage, { width: 600, height: 800, quality: 85 })}
             alt={product.name}
             className="absolute inset-0 w-full h-full object-cover"
-            animate={{ opacity: (hovered && secondaryImage) ? 0 : 1 }}
+            animate={{ opacity: hovered && secondaryImage ? 0 : 1 }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
             loading="lazy"
           />
@@ -86,55 +110,85 @@ export const ProductCard = ({ product, className }) => {
           />
         )}
 
-        {/* Badges */}
+        {/* Minimal Badges — only shown in top left */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none">
-          {product.is_new_arrival && (
-            <Badge variant="new" size="xs">New</Badge>
-          )}
-          {hasDiscount && (
-            <Badge variant="sale" size="xs">-{discountPct}%</Badge>
-          )}
+          {product.is_new_arrival && <Badge variant="new" size="xs">New</Badge>}
+          {hasDiscount && <Badge variant="sale" size="xs">-{discountPct}%</Badge>}
         </div>
 
-        {/* Wishlist Button */}
-        <motion.button
-          onClick={handleWishlistToggle}
-          whileTap={{ scale: 0.9 }}
-          className={cn(
-            'absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-soft',
-            wishlisted
-              ? 'bg-charcoal text-white'
-              : 'bg-white/90 text-charcoal hover:bg-white'
+        {/* Wishlist Button — only revealed when cursor is over the card */}
+        <AnimatePresence>
+          {hovered && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.15 }}
+              onClick={handleWishlistToggle}
+              whileTap={{ scale: 0.9 }}
+              className={cn(
+                'absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-soft z-20',
+                wishlisted
+                  ? 'bg-charcoal text-white'
+                  : 'bg-white/95 text-charcoal hover:bg-white hover:text-charcoal'
+              )}
+              aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-pressed={wishlisted}
+            >
+              <Heart className={cn('w-3.5 h-3.5', wishlisted && 'fill-current text-rose-500')} />
+            </motion.button>
           )}
-          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          aria-pressed={wishlisted}
-        >
-          <Heart className={cn('w-3.5 h-3.5', wishlisted && 'fill-current')} />
-        </motion.button>
+        </AnimatePresence>
 
-        {/* Quick View Overlay */}
+        {/* Quick Actions Hover Overlay — only shown when cursor is up */}
         <AnimatePresence>
           {hovered && (
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.2 }}
-              className="absolute bottom-3 left-3 right-3"
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute bottom-3 left-3 right-3 z-20 flex flex-col gap-1.5"
             >
-              <Link
-                to={`/products/${product.slug}`}
-                className="block w-full text-center bg-white/95 backdrop-blur-sm text-charcoal text-xs font-semibold uppercase tracking-wider-brand py-2.5 rounded-xs hover:bg-charcoal hover:text-white transition-colors"
-                onClick={(e) => e.stopPropagation()}
+              {/* Quick Add to Cart button */}
+              <button
+                type="button"
+                onClick={handleQuickAdd}
+                className={cn(
+                  'w-full py-2.5 px-3 rounded-xs text-xs font-semibold uppercase tracking-wider-brand flex items-center justify-center gap-1.5 shadow-lg transition-all',
+                  justAdded
+                    ? 'bg-muted-olive text-white'
+                    : 'bg-charcoal text-white hover:bg-black'
+                )}
               >
-                Quick View
-              </Link>
+                {justAdded ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Added to Cart</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>Add to Cart</span>
+                  </>
+                )}
+              </button>
+
+              {/* View Details button */}
+              <button
+                type="button"
+                onClick={handleViewDetails}
+                className="w-full py-2 px-3 rounded-xs text-[11px] font-medium uppercase tracking-wider-brand bg-white/95 backdrop-blur-sm text-charcoal hover:bg-white transition-colors flex items-center justify-center gap-1 shadow-xs"
+              >
+                <Eye className="w-3 h-3 text-muted-text" />
+                <span>View Details</span>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
       </Link>
 
-      {/* Product Info */}
+      {/* Product Info below image */}
       <div className="mt-3 space-y-1 flex-1">
         {product.category && (
           <p className="text-[11px] uppercase tracking-wider-brand text-muted-text">
@@ -159,3 +213,4 @@ export const ProductCard = ({ product, className }) => {
   );
 };
 
+export default ProductCard;

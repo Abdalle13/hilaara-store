@@ -7,13 +7,10 @@ import {
   Shield,
   CreditCard,
   RefreshCw,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   Star,
   CheckCircle2,
-  Clock,
-  Compass,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { ProductGrid } from '../../components/product/ProductGrid';
@@ -198,12 +195,6 @@ const EditorialHero = () => {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 className="space-y-6 sm:space-y-7"
               >
-                {/* Eyebrow Pill */}
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/15 text-[11px] font-semibold uppercase tracking-widest-brand text-soft-beige backdrop-blur-md shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-muted-olive animate-pulse" />
-                  <span>{slide.eyebrow}</span>
-                </div>
-
                 {/* Main Headline */}
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.05] tracking-tight text-white">
                   {slide.title}
@@ -288,7 +279,7 @@ const EditorialHero = () => {
             </div>
           </div>
 
-          {/* Right Column: Editorial Visual Canvas (5 cols) */}
+          {/* Right Column: Clean Editorial Visual Canvas (5 cols) */}
           <div className="lg:col-span-5 relative flex justify-center">
             <AnimatePresence mode="wait">
               <motion.div
@@ -307,85 +298,10 @@ const EditorialHero = () => {
                   loading="eager"
                 />
 
-                {/* Vignette Gradient Scrim */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121311]/90 via-transparent to-black/25" />
-
-                {/* Floating Top Badge */}
-                <div className="absolute top-4 left-4 bg-charcoal/80 backdrop-blur-md border border-white/25 text-white text-[10px] uppercase tracking-wider-brand font-semibold px-3.5 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-soft-beige" />
-                  <span>{slide.badge}</span>
-                </div>
-
-                {/* Floating Patron Rating Pill */}
-                <div className="absolute top-4 right-4 bg-charcoal/80 backdrop-blur-md border border-white/20 text-white text-[11px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  <span className="font-semibold text-xs">4.9</span>
-                </div>
-
-                {/* Floating Bottom Product Micro-Card */}
-                <div className="absolute bottom-4 left-4 right-4 bg-[#141513]/90 backdrop-blur-md border border-white/20 p-4 rounded-xs text-white shadow-2xl flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <span className="text-[10px] uppercase tracking-wider-brand text-soft-beige/70 block font-medium">
-                      Atelier Highlight
-                    </span>
-                    <span className="font-serif text-sm font-semibold text-white block">
-                      {slide.featuredProduct.name}
-                    </span>
-                    <span className="text-xs font-medium text-soft-beige">
-                      {slide.featuredProduct.price}
-                    </span>
-                  </div>
-                  <Link to={`/products/${slide.featuredProduct.slug}`}>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-white text-charcoal text-xs font-semibold uppercase tracking-wider-brand hover:bg-soft-beige transition-colors">
-                      View Look <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </Link>
-                </div>
+                {/* Subtle Luxury Gradient Scrim */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#121311]/60 via-transparent to-transparent pointer-events-none" />
               </motion.div>
             </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Floating Trust Strip directly anchored to Hero */}
-        <div className="mt-12 pt-6 border-t border-white/10 grid grid-cols-2 lg:grid-cols-4 gap-4 text-left">
-          <div className="flex items-center gap-3 text-soft-beige/90">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <Clock className="w-4 h-4 text-soft-beige" />
-            </div>
-            <div>
-              <span className="text-white text-xs font-semibold block">Mogadishu Same-Day</span>
-              <span className="text-[11px] text-soft-beige/70">Delivered within 6 hours</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-soft-beige/90">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <CreditCard className="w-4 h-4 text-soft-beige" />
-            </div>
-            <div>
-              <span className="text-white text-xs font-semibold block">Somali Mobile Money</span>
-              <span className="text-[11px] text-soft-beige/70">EVC Plus, eDahab, ZAAD</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-soft-beige/90">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <Shield className="w-4 h-4 text-soft-beige" />
-            </div>
-            <div>
-              <span className="text-white text-xs font-semibold block">100% Verified Quality</span>
-              <span className="text-[11px] text-soft-beige/70">Pure natural flax & silk</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-soft-beige/90">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-4 h-4 text-soft-beige" />
-            </div>
-            <div>
-              <span className="text-white text-xs font-semibold block">Doorstep Mobile Pay</span>
-              <span className="text-[11px] text-soft-beige/70">Pay when courier arrives</span>
-            </div>
           </div>
         </div>
       </div>
@@ -430,10 +346,6 @@ const CollectionBento = () => (
       viewport={{ once: true, margin: '-60px' }}
       className="text-center mb-12 sm:mb-16 space-y-3"
     >
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-soft-beige/60 text-muted-olive text-xs font-semibold uppercase tracking-widest-brand">
-        <Compass className="w-3.5 h-3.5" />
-        <span>Curated Gateways</span>
-      </div>
       <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-charcoal">
         Explore by Wardrobe Category
       </h2>
@@ -450,12 +362,12 @@ const CollectionBento = () => (
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-40px' }}
-        className="md:col-span-7 group relative overflow-hidden rounded-xs min-h-[380px] sm:min-h-[440px] border border-soft-beige shadow-soft"
+        className="md:col-span-7 group relative overflow-hidden rounded-xs min-h-[380px] sm:min-h-[460px] border border-soft-beige shadow-soft"
       >
         <img
-          src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85"
+          src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=85"
           alt="Women's Dirac & Caftans"
-          className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />
@@ -486,12 +398,12 @@ const CollectionBento = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-40px' }}
-          className="group relative overflow-hidden rounded-xs min-h-[210px] sm:min-h-[210px] border border-soft-beige shadow-soft"
+          className="group relative overflow-hidden rounded-xs min-h-[220px] sm:min-h-[225px] border border-soft-beige shadow-soft"
         >
           <img
-            src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80"
+            src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85"
             alt="Men's Tailoring & Blazers"
-            className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover object-top transform transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-transparent" />
@@ -517,12 +429,12 @@ const CollectionBento = () => (
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-40px' }}
-          className="group relative overflow-hidden rounded-xs min-h-[210px] sm:min-h-[210px] border border-soft-beige shadow-soft"
+          className="group relative overflow-hidden rounded-xs min-h-[220px] sm:min-h-[225px] border border-soft-beige shadow-soft"
         >
           <img
-            src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=80"
+            src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=85"
             alt="Guntiino & Evening Wear"
-            className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-transparent" />
@@ -546,30 +458,14 @@ const CollectionBento = () => (
   </section>
 );
 
-// ─── 4. Interactive Curated Catalog Showcase ──────────────────────────────────
+// ─── 4. Curated Featured Collection (No Filters) ──────────────────────────────
 const CuratedShowcase = () => {
-  const [activeTab, setActiveTab] = useState('all');
-
-  const filterProducts = () => {
-    switch (activeTab) {
-      case 'women':
-        return REAL_PRODUCTS.filter((p) => p.gender === 'women');
-      case 'men':
-        return REAL_PRODUCTS.filter((p) => p.gender === 'men');
-      case 'new':
-        return REAL_PRODUCTS.filter((p) => p.is_new_arrival);
-      case 'all':
-      default:
-        return REAL_PRODUCTS.slice(0, 8);
-    }
-  };
-
-  const displayed = filterProducts();
+  const featured = REAL_PRODUCTS.slice(0, 8);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 border-t border-soft-beige">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-        <div className="space-y-2">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div className="space-y-1">
           <span className="text-xs uppercase tracking-widest-brand text-muted-olive font-medium">
             Atelier Catalog
           </span>
@@ -578,41 +474,16 @@ const CuratedShowcase = () => {
           </h2>
         </div>
 
-        {/* Tab Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-          {[
-            { id: 'all', label: 'All Highlights' },
-            { id: 'women', label: "Women's Haute" },
-            { id: 'men', label: "Men's Tailoring" },
-            { id: 'new', label: 'New Arrivals' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider-brand transition-all shrink-0 ${
-                activeTab === tab.id
-                  ? 'bg-charcoal text-white shadow-xs'
-                  : 'bg-soft-beige/50 text-muted-text hover:bg-soft-beige hover:text-charcoal'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <Link
+          to="/shop"
+          className="text-xs uppercase tracking-wider-brand font-semibold text-charcoal hover:text-muted-olive transition-colors flex items-center gap-1.5"
+        >
+          View All <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
 
       {/* Grid */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.35 }}
-        >
-          <ProductGrid products={displayed} skeletonCount={4} />
-        </motion.div>
-      </AnimatePresence>
+      <ProductGrid products={featured} skeletonCount={4} />
 
       <div className="mt-12 text-center">
         <Link to="/shop">
